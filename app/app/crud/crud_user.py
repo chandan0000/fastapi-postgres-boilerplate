@@ -48,21 +48,17 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         user = await self.get_by_email(db, email=email)
         if not user:
             return None
-        if not verify_password(password, user.hashed_password):
-            return None
-        return user
+        return None if not verify_password(password, user.hashed_password) else user
 
     def authenticate(
         self, db: Session | AsyncSession, *, email: str, password: str
     ) -> User | None | Awaitable[User | None]:
         if isinstance(db, AsyncSession):
             return self.authenticate_async(db=db, email=email, password=password)
-        user = self.get_by_email(db, email=email)
-        if not user:
+        if user := self.get_by_email(db, email=email):
+            return None if not verify_password(password, user.hashed_password) else user
+        else:
             return None
-        if not verify_password(password, user.hashed_password):
-            return None
-        return user
 
     def is_active(self, user: User) -> bool:
         return user.is_active

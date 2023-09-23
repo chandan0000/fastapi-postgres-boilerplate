@@ -41,13 +41,12 @@ async def internal_service_exceptions_handler(request: Request, exc: Any):
     exception_type, traceback_str, traceback_full = get_traceback_info(exc)
     logger.error(f"Internal service error{exception_type}:\n{traceback_str}")
 
-    response = utils.APIErrorResponse(
+    return utils.APIErrorResponse(
         data=str(exc.detail),
         msg_code=exc.msg_code,
         msg_status=exc.msg_status,
         status_code=exc.status_code,
     )
-    return response
 
 
 async def internal_exceptions_handler(request: Request, exc: Any):
@@ -56,10 +55,7 @@ async def internal_exceptions_handler(request: Request, exc: Any):
         f"Unhandled {exception_type} Exception Happened:\n{traceback_str}"
     )
 
-    error_msg = ""
-    if settings.DEBUG:
-        error_msg = str(exc)
-
+    error_msg = str(exc) if settings.DEBUG else ""
     return utils.APIErrorResponse(
         data=error_msg,
         msg_code=utils.MessageCodes.internal_error,
@@ -71,25 +67,23 @@ async def internal_exceptions_handler(request: Request, exc: Any):
 async def http_exception_handler(request: Request, exc: Any):
     _, _, traceback_full = get_traceback_info(exc)
 
-    response = utils.APIErrorResponse(
+    return utils.APIErrorResponse(
         data=exc.detail,
         msg_code=utils.MessageCodes.internal_error,
         msg_status=2,
         status_code=exc.status_code,
     )
-    return response
 
 
 async def validation_exceptions_handler(request: Request, exc: Any):
     exception_type, traceback_str, traceback_full = get_traceback_info(exc)
 
-    response = utils.APIErrorResponse(
+    return utils.APIErrorResponse(
         data=exc.errors(),
         msg_code=utils.MessageCodes.input_error,
         msg_status=2,
         status_code=status.HTTP_400_BAD_REQUEST,
     )
-    return response
 
 
 http_exceptions = (HTTPException, http_exception_handler)
