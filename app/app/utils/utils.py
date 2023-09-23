@@ -22,7 +22,7 @@ def last_jmonth_period(
 
 
 def generate_excel_file(path, data: dict, title: str = "Report") -> Tuple[str, str]:
-    file_name = "{}-{}.xlsx".format(title, str(uuid.uuid4()))
+    file_name = f"{title}-{str(uuid.uuid4())}.xlsx"
     file_path = path + file_name
     df = pd.DataFrame(data)
     writer = ExcelWriter(file_path)

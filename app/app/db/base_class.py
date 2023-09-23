@@ -41,5 +41,5 @@ class Base:
         created_hour = "{:0>2}".format(int(utc.hour))
         created_minute = "{:0>2}".format(int(utc.minute))
         created_second = "{:0>2}".format(int(utc.second))
-        created_time = created_hour + ":" + created_minute + ":" + created_second
+        created_time = f"{created_hour}:{created_minute}:{created_second}"
         return JalaliDate(utc).strftime("%Y-%m-%d") + " " + created_time

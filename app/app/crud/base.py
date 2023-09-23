@@ -49,27 +49,21 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return results.first()
 
     def _first(self, scalars) -> ModelType | None | Awaitable[ModelType | None]:
-        if iscoroutine(scalars):
-            return self._first_async(scalars)
-        return scalars.first()
+        return self._first_async(scalars) if iscoroutine(scalars) else scalars.first()
 
     async def _last_async(self, scalars) -> ModelType | None:
         results = await scalars
         return results.last()
 
     def _last(self, scalars) -> ModelType | None | Awaitable[ModelType | None]:
-        if iscoroutine(scalars):
-            return self._last_async(scalars)
-        return scalars.last()
+        return self._last_async(scalars) if iscoroutine(scalars) else scalars.last()
 
     async def _all_async(self, scalars) -> list[ModelType]:
         results = await scalars
         return results.all()
 
     def _all(self, scalars) -> list[ModelType] | Awaitable[list[ModelType]]:
-        if iscoroutine(scalars):
-            return self._all_async(scalars)
-        return scalars.all()
+        return self._all_async(scalars) if iscoroutine(scalars) else scalars.all()
 
     def get(
         self, db: Session | AsyncSession, id: Any

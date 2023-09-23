@@ -31,8 +31,7 @@ def app() -> Generator[FastAPI, Any, None]:
     Create a fresh database on each test case.
     """
     Base.metadata.create_all(engine)
-    _app = start_application()
-    yield _app
+    yield start_application()
     Base.metadata.drop_all(engine)
 
 
